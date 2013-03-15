@@ -43,7 +43,7 @@ Mojolicious::Plugin::RemoteAddr - an easy way of getting remote ip address
 =head1 DESCRIPTION
 
 L<Mojolicious::Plugin::RemoteAddr> adds simple helper "remote_addr" which returns an ip address of a remote host, It tries getting remote ip in different ways.
-Firstly, it takes 'X-Real-IP' header. It it is empty it takes the ip from current request transaction.
+Firstly, it takes 'X-Real-IP' header. If it is empty it takes the ip from current request transaction.
 
 =head1 CONFIG
 
