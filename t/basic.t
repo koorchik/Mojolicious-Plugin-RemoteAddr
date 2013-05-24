@@ -8,7 +8,7 @@ plugin 'RemoteAddr';
 
 get '/ip' => sub {
   my $self = shift;
-  $self->render_text( $self->remote_addr );
+  $self->render( text => $self->remote_addr );
 };
 
 # IP from transaction
