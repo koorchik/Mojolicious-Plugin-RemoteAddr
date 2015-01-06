@@ -6,7 +6,7 @@ our $VERSION = '0.02';
 sub register {
     my ($self, $app, $conf) = @_;
 
-    $conf->{order} ||= ['x-real-ip', 'tx'];
+    $conf->{order} ||= ['x-real-ip', 'x-forwarded-for', 'tx'];
     
     $app->helper( remote_addr => sub {
         my $c = shift;
@@ -14,6 +14,9 @@ sub register {
         foreach my $place ( @{ $conf->{order} } ) {
             if ( $place eq 'x-real-ip' ) {
                 my $ip = $c->req->headers->header('X-Real-IP');
+                return $ip if $ip;
+            } elsif ( $place eq 'x-forwarded-for' ) {
+                my $ip = $c->req->headers->header('X-Forwarded-For');
                 return $ip if $ip;
             } elsif ( $place eq 'tx' ) {
                 my $ip = $c->tx->remote_address;
@@ -43,13 +46,13 @@ Mojolicious::Plugin::RemoteAddr - an easy way of getting remote ip address
 =head1 DESCRIPTION
 
 L<Mojolicious::Plugin::RemoteAddr> adds simple helper "remote_addr" which returns an ip address of a remote host, It tries getting remote ip in different ways.
-Firstly, it takes 'X-Real-IP' header. If it is empty it takes the ip from current request transaction.
+Firstly, it takes 'X-Real-IP' header. Secondly, it takes 'X-Forwarded-For' header. If they are empty it takes the ip from current request transaction.
 
 =head1 CONFIG
 
 =head2 order
 
-Lookup order. Default is ['x-real-ip', 'tx']
+Lookup order. Default is ['x-real-ip', 'x-forwarded-for', 'tx']
 
 Supported places:
 
@@ -58,6 +61,10 @@ Supported places:
 =item 'x-real-ip'  
 
 'X-Real-IP' request header
+
+=item 'x-forwarded-for'
+
+'X-Forwarded-For' request header
 
 =item 'tx' 
 
