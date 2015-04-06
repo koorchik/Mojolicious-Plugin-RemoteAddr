@@ -1,13 +1,13 @@
 package Mojolicious::Plugin::RemoteAddr;
 use Mojo::Base 'Mojolicious::Plugin';
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 sub register {
     my ($self, $app, $conf) = @_;
 
     $conf->{order} ||= ['x-real-ip', 'x-forwarded-for', 'tx'];
-    
+
     $app->helper( remote_addr => sub {
         my $c = shift;
 
@@ -25,12 +25,11 @@ sub register {
         }
 
         return;
-    }); 
+    });
 }
 
 1;
 __END__
-
 =head1 NAME
 
 Mojolicious::Plugin::RemoteAddr - an easy way of getting remote ip address
@@ -39,10 +38,10 @@ Mojolicious::Plugin::RemoteAddr - an easy way of getting remote ip address
 
   # Mojolicious
   $self->plugin('RemoteAddr');
-  
+
   # In controller
   my $ip = $self->remote_addr;
-    
+
 =head1 DESCRIPTION
 
 L<Mojolicious::Plugin::RemoteAddr> adds simple helper "remote_addr" which returns an ip address of a remote host, It tries getting remote ip in different ways.
@@ -54,11 +53,13 @@ Firstly, it takes 'X-Real-IP' header. Secondly, it takes 'X-Forwarded-For' heade
 
 Lookup order. Default is ['x-real-ip', 'x-forwarded-for', 'tx']
 
+If you do not have reverse proxy then set order to ['tx'] to avoid ip-address spoofing.
+
 Supported places:
 
 =over 4
 
-=item 'x-real-ip'  
+=item 'x-real-ip'
 
 'X-Real-IP' request header
 
@@ -66,7 +67,7 @@ Supported places:
 
 'X-Forwarded-For' request header
 
-=item 'tx' 
+=item 'tx'
 
 current request transaction
 
